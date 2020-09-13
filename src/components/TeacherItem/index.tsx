@@ -2,34 +2,54 @@ import React from 'react'
 import whatsappIcon from  '../../assets/images/icons/whatsapp.svg'
 
 import './styles.css'
+import api from '../../services/api'
 
-const TeacherItem = () => (
-     
-        <article className='teacher-item'>
-            <header>
-                <img src="https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_960_720.png" alt="meu avatar" />
-                <div>
-                    <strong>Diego Fernandes</strong>
-                    <span>Química</span>
-                </div>
-            </header>
+export interface Teacher {
+  id:number,
+  avatar: string,
+  bio : string,
+  cost : number,
+  name : string,
+  subject : string,
+  whatsapp : string
+}
+
+interface TeacherItemProps {
+  teacher: Teacher
+}
+
+const TeacherItem : React.FC<TeacherItemProps> = ({teacher}) => {
+  
+  function createNewConnection(){
+    api.post('connections',{
+      user_id : teacher.id
+    })
+  }
+
+  return (
+    <article className='teacher-item'>
+        <header>
+            <img src={teacher.avatar} alt="meu avatar" />
+            <div>
+              <strong>{teacher.name}</strong>
+                <span>{teacher.subject}</span>
+            </div>
+        </header>
+        <p>
+          {teacher.bio}
+        </p>
+        <footer>
             <p>
-                Entuiasta nato das melhores tecnologia de Química
-                <br/><br/>
-                Apaixonada por explodir coisas em laboratório e por mudar a vida das pessoas.
+                Preço/hora
+                <strong>R$ {teacher.cost}</strong>
             </p>
-            <footer>
-                <p>
-                    Preço/hora
-                    <strong>R$ 20,00</strong>
-                </p>
-                <button type='button'>
-                    <img src={whatsappIcon} alt="whatsapp" />
-                    Entrar em contato
-                </button>
-            </footer>
-        </article>
-    
-)
+            <a target="_blank" href={`https://wa.me/${teacher.whatsapp}`} onClick={createNewConnection} >
+                <img src={whatsappIcon} alt="whatsapp" />
+                Entrar em contato
+            </a>
+        </footer>
+    </article>
+  )
+}
 
 export default TeacherItem
